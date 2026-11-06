@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Calculadora orientativa de fork&formula: perfil personal, IMC informatiu i recomanacions de postres.">
+<title>Calculator | fork&formula</title>
+<style>
+:root{--bg:#f6f5ef;--card:#fff;--ink:#24352d;--muted:#718078;--green:#477b61;--mint:#dcebe1;--line:#e5e9e2;--accent:#d98970;--shadow:0 18px 50px rgba(36,53,45,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+header{padding:26px 6vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(255,255,255,.7)}
+.brand{font-weight:850;letter-spacing:-1px;font-size:1.35rem}.brand span{color:var(--green)}.tag{font-size:.78rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+main{max-width:1060px;margin:42px auto;padding:0 20px 70px}.hero{text-align:center;margin:0 auto 30px;max-width:700px}.eyebrow{color:var(--green);font-weight:750;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase}.hero h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.06;letter-spacing:-.05em;margin:12px 0}.hero p{color:var(--muted);margin:0}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:var(--shadow)}h2{font-size:1.2rem;margin:0 0 5px;letter-spacing:-.02em}.sub{font-size:.9rem;color:var(--muted);margin:0 0 22px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field.full{grid-column:1/-1}label{display:block;font-size:.82rem;font-weight:700;margin-bottom:6px}input,select{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:#fcfcf9;color:var(--ink);font:inherit;outline:none}input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #477b611a}.hint{font-size:.75rem;color:var(--muted);margin-top:5px}.btn{border:0;border-radius:13px;background:var(--green);color:white;padding:14px 20px;font:inherit;font-weight:750;cursor:pointer;width:100%;margin-top:20px}.btn:hover{filter:brightness(.94)}
+.result{display:none}.result.show{display:block}.scorebox{display:flex;align-items:center;justify-content:space-between;background:var(--mint);border-radius:17px;padding:18px;margin:17px 0}.score{font-size:2.35rem;font-weight:850;letter-spacing:-.06em;color:var(--green)}.score small{font-size:.9rem;letter-spacing:0}.metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{border:1px solid var(--line);border-radius:14px;padding:14px}.metric span{display:block;color:var(--muted);font-size:.78rem}.metric strong{font-size:1.3rem}.note{font-size:.78rem;color:var(--muted);background:#f7f8f4;padding:12px 14px;border-radius:12px;margin-top:14px}
+.desserts{display:grid;gap:10px;margin-top:14px}.dessert{display:flex;justify-content:space-between;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:14px;align-items:center}.dessert strong{display:block;font-size:.93rem}.dessert small{color:var(--muted)}.kcal{font-weight:800;color:var(--green);white-space:nowrap}.foot{max-width:850px;margin:24px auto 0;text-align:center;color:var(--muted);font-size:.78rem}.actions{display:flex;gap:10px}.actions .btn{margin-top:14px}.secondary{background:#e9eee8;color:var(--ink)}
+@media(max-width:760px){.layout{grid-template-columns:1fr}header{padding:20px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.panel{padding:21px}main{margin-top:28px}}
+@media print{header,.hero,.formpanel,.actions{display:none!important}body{background:white}.layout{display:block}.panel{box-shadow:none;border:0}.result{display:block!important}}
+</style>
+</head>
+<body>
+<header><div class="brand">fork<span>&</span>formula</div><div class="tag">Healthy desserts · Calculator</div></header>
+<main>
+<section class="hero">
+<div class="eyebrow">El teu perfil, el teu equilibri</div>
+<h1>Descobreix el teu<br><span style="color:var(--green)">perfil saludable.</span></h1>
+<p>Introdueix algunes dades bàsiques i consulta un informe orientatiu amb postres del nostre menú.</p>
+</section>
+<div class="layout">
+<section class="panel formpanel">
+<h2>Les teves dades</h2><p class="sub">Les dades es calculen al teu dispositiu i no s'envien a cap servidor.</p>
+<form id="profile">
+<div class="fields">
+<div class="field full"><label for="name">Nom (opcional)</label><input id="name" type="text" placeholder="Com et podem dir?"></div>
+<div class="field"><label for="age">Edat (anys)</label><input id="age" type="number" min="1" max="110" placeholder="Ex. 25" required></div>
+<div class="field"><label for="activity">Activitat física</label><select id="activity"><option value="1">Baixa — poca activitat</option><option value="2" selected>Moderada — 1 a 3 dies/setmana</option><option value="3">Alta — 4 o més dies/setmana</option></select></div>
+<div class="field"><label for="height">Alçada (cm)</label><input id="height" type="number" min="80" max="230" placeholder="Ex. 170" required></div>
+<div class="field"><label for="weight">Pes (kg)</label><input id="weight" type="number" min="20" max="300" step="0.1" placeholder="Ex. 65" required></div>
+</div>
+<div class="hint">No cal introduir cap dada mèdica ni informació de contacte.</div>
+<button class="btn" type="submit">Genera el meu informe <span aria-hidden="true">→</span></button>
+</form>
+</section>
+<section class="panel result" id="result" aria-live="polite">
+<h2 id="reportTitle">El teu informe</h2><p class="sub">El teu resum personal de fork&formula</p>
+<div class="scorebox"><div><strong>HBI · Healthy Balance Indicator</strong><div class="hint" style="color:#456b55">Índex orientatiu de recomanació de postres</div></div><div class="score"><span id="hbi">—</span><small>/100</small></div></div>
+<div class="metricgrid">
+<div class="metric"><span>IMC orientatiu</span><strong id="bmi">—</strong></div>
+<div class="metric"><span>Perfil d'activitat</span><strong id="activityOut">—</strong></div>
+</div>
+<p class="note" id="interpretation"></p>
+<h2 style="margin-top:22px">Postres recomanades</h2><p class="sub">Tres opcions del nostre menú, ordenades per calories estimades per ració.</p>
+<div class="desserts" id="desserts"></div>
+<div class="note">Les calories són estimacions per ració estàndard. Poden variar segons la recepta, els ingredients i la mida real de la ració.</div>
+<div class="actions"><button class="btn secondary" type="button" onclick="window.print()">Descarrega / imprimeix l'informe</button></div>
+</section>
+</div>
+<p class="foot">fork&formula · Menjar bé també és gaudir. Aquest calculador és informatiu i no substitueix l'assessorament d'un professional de la salut.</p>
+</main>
+<script>
+const menu=[
+["Batut de fruits vermells",160,"Batut"],
+["Galeta amb civada",170,"Galeta"],
+["Galetes enrotllades",180,"Galetes"],
+["Creps",220,"Creps"],
+["Batut de proteïna de maduixa",220,"Batut"],
+["Creps de civada",230,"Creps"],
+["Bescuit de iogurt",250,"Pastís"],
+["Croissant",270,"Brioixeria"],
+["Donut",300,"Brioixeria"],
+["Pastís de xocolata sense sucre",320,"Pastís"],
+["Pastís de pastanaga",350,"Pastís"],
+["Cheesecake",350,"Pastís"],
+["Batut d'Oreo",350,"Batut"],
+["Red Velvet",380,"Pastís"]
+];
+const activityNames={1:"Baixa",2:"Moderada",3:"Alta"};
+document.getElementById("profile").addEventListener("submit",e=>{
+ e.preventDefault();
+ const age=Number(document.getElementById("age").value), h=Number(document.getElementById("height").value)/100, w=Number(document.getElementById("weight").value), act=Number(document.getElementById("activity").value);
+ if(!age||!h||!w||h<=0){return}
+ const bmi=w/(h*h);
+ // HBI is explicitly a non-medical dessert-selection indicator, not a health score.
+ // Activity level changes the indicative portion/energy band; no BMI-based health judgement.
+ const target={1:200,2:250,3:300}[act];
+ const ranked=menu.map(item=>({...{name:item[0],kcal:item[1],type:item[2]},score:Math.max(0,100-Math.abs(item[1]-target)*0.35)})).sort((a,b)=>b.score-a.score).slice(0,3);
+ const avg=ranked.reduce((s,x)=>s+x.score,0)/ranked.length;
+ const hbi=Math.round(avg);
+ const name=document.getElementById("name").value.trim();
+ document.getElementById("reportTitle").textContent=name?`L'informe de ${name}`:"El teu informe personal";
+ document.getElementById("hbi").textContent=hbi;
+ document.getElementById("activityOut").textContent=activityNames[act];
+ const bmiEl=document.getElementById("bmi");
+ if(age<18){bmiEl.textContent="No aplicable";document.getElementById("interpretation").textContent="Com que tens menys de 18 anys, l'IMC s'ha d'interpretar amb taules específiques per edat i sexe. Per això no el classifiquem aquí. L'HBI només orienta la selecció de postres segons el perfil d'activitat i les calories estimades."}
+ else {bmiEl.textContent=bmi.toFixed(1);document.getElementById("interpretation").textContent="L'IMC és una dada orientativa i no determina per si sola l'estat de salut. L'HBI no és un índex mèdic: compara les calories estimades de les postres amb una franja orientativa associada al nivell d'activitat que has indicat."}
+ document.getElementById("desserts").innerHTML=ranked.map(d=>`<div class="dessert"><div><strong>${d.name}</strong><small>${d.type} · ració estàndard</small></div><div class="kcal">${d.kcal} kcal</div></div>`).join("");
+ document.getElementById("result").classList.add("show");
+ document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+});
+</script>
+</body>
+</html>
